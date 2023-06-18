@@ -345,10 +345,14 @@ int floatFloat2Int(unsigned uf) {
     return 0x80000000;
   }
 
-  // 01111111b     1 x frac      1.5 = 0x400000
-  // 10000000b     2 x frac      1.25 = 0x200000, 1.75 = 0x600000
-  // 10000010b     4 x frac      1.125 = 0x100000, 1.375 = 0x300000, 1.625 =
-  // 0x500000, 1.875 = 0x700000
+  // the result is determined by some key fracs and corresponding exps.
+  // each time raise over these fracs, plus one.
+  // exp           E             frac
+  // 01111111b     1             1.0 = 0x000000
+  // 10000000b     2             1.5 = 0x400000
+  // 10000000b     4             1.25 = 0x200000, 1.75 = 0x600000
+  // 10000010b     8             1.125 = 0x100000, 1.375 = 0x300000,
+  //                             1.625 = 0x500000, 1.875 = 0x700000
 
   sign = (uf >> 31) & 1;
   frac = uf & 0x7fffff;
