@@ -381,4 +381,14 @@ int floatFloat2Int(unsigned uf) {
  *   Max ops: 30
  *   Rating: 4
  */
-unsigned floatPower2(int x) { return 2; }
+unsigned floatPower2(int x) {
+  // printf("floatPower2\n");
+  if (x < -127) {
+    return 0;
+  }
+  if (x > 128) {
+    return 0x7f800000;
+  }
+
+  return (x + 127) << 23;
+}
