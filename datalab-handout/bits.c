@@ -335,7 +335,35 @@ unsigned floatScale2(unsigned uf) {
  *   Max ops: 30
  *   Rating: 4
  */
-int floatFloat2Int(unsigned uf) { return 2; }
+int floatFloat2Int(unsigned uf) {
+  unsigned exp, sign, frac, move, res;
+  exp = (uf >> 23) & 0xff;
+  if (exp < 0x7f) {
+    return 0;
+  }
+  if (exp > 158) {
+    return 0x80000000;
+  }
+
+  // 01111111b     1 x frac      1.5 = 0x400000
+  // 10000000b     2 x frac      1.25 = 0x200000, 1.75 = 0x600000
+  // 10000010b     4 x frac      1.125 = 0x100000, 1.375 = 0x300000, 1.625 =
+  // 0x500000, 1.875 = 0x700000
+
+  sign = (uf >> 31) & 1;
+  frac = uf & 0x7fffff;
+  move = exp - 127;
+  res = (frac >> (23 - move)) & ((1 << (move + 1)) - 1);
+  res += 1;
+
+  if (sign) {
+    return ~res + 1;
+  }
+  // printf("move: %d\n", move);
+  // printf("res: %d\n", res);
+
+  return res;
+}
 /*
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
  *   (2.0 raised to the power x) for any 32-bit integer x.
