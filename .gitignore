@@ -3,3 +3,4 @@
 *.o
 *.disas
 *.asm
+exploit-raw.txt
