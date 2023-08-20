@@ -1,0 +1,6 @@
+services:
+  lab:
+    build: .
+    platform: linux/amd64
+    volumes:
+      - .:/usr/src/labs
